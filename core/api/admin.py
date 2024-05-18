@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import LeaveRequest, SiteIssue
 
-# Register your models here.
+admin.site.register(LeaveRequest)
+admin.site.register(SiteIssue)

@@ -67,3 +67,6 @@ class SiteIssue(models.Model):
 
     def __str__(self):
         return self.issue_title
+    
+    class Meta:
+        verbose_name_plural = "Site Issues"
