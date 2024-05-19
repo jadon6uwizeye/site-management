@@ -31,7 +31,8 @@ class LeaveRequest(models.Model):
         (REJECTED, "Rejected"),
     ]
     
-    requested_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    requested_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    approved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="approved_by", null=True, blank=True)
     leave_type = models.CharField(
         max_length=50, choices=LEAVE_TYPE_CHOICES, default=CASUAL_LEAVE
     )
@@ -44,8 +45,7 @@ class LeaveRequest(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.employee_id
-
+        return f"{self.requested_by} - {self.leave_type}"
 
 class SiteIssue(models.Model):
     # status choices
@@ -60,7 +60,9 @@ class SiteIssue(models.Model):
     
     issue_title = models.CharField(max_length=50)
     issue_description = models.TextField(null=True, blank=True)
+    supporting_document = models.FileField(upload_to="supporting_documents/")
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    resolved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="resolved_by", null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=OPEN)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -70,3 +72,8 @@ class SiteIssue(models.Model):
     
     class Meta:
         verbose_name_plural = "Site Issues"
+        
+        
+
+# District
+# office levels
