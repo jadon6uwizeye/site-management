@@ -61,7 +61,7 @@ class SiteIssue(models.Model):
     issue_title = models.CharField(max_length=50)
     issue_description = models.TextField(null=True, blank=True)
     supporting_document = models.FileField(upload_to="supporting_documents/")
-    reported_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    reported_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
     resolved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="resolved_by", null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=OPEN)
     created_at = models.DateTimeField(auto_now_add=True)

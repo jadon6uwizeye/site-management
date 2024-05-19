@@ -29,8 +29,10 @@ class SiteIssueSerializer(serializers.ModelSerializer):
         }
         
     def get_resolved_by_data(self, obj):
-        return {
-            "id": obj.resolved_by.id,
-            "username": obj.resolved_by.username,
-            "email": obj.resolved_by.email,
-        }
+        if obj.resolved_by:
+            return {
+                "id": obj.resolved_by.id,
+                "username": obj.resolved_by.username,
+                "email": obj.resolved_by.email,
+            }
+        return None

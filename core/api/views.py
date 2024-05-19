@@ -20,4 +20,6 @@ class SiteIssueListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SiteIssueSerializer
     
     def perform_create(self, serializer):
-        serializer.save(reported_by=self.request.user)
+        user = get_user_model().objects.all().first()
+        print("user", user)
+        serializer.save(reported_by=user)
