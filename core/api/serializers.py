@@ -17,7 +17,8 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
         
     def get_can_approve(self, obj):
         user = self.context.get("user")
-        if user.is_staff:
+        # if user is on office level 3
+        if user.userprofile.office_level.office_level == 3:
             return True
         return False
         
@@ -49,6 +50,7 @@ class SiteIssueSerializer(serializers.ModelSerializer):
     
     def get_can_resolve(self, obj):
         user = self.context.get("user")
-        if user.is_staff:
+        # if user is not on office level 1
+        if user.userprofile.office_level.office_level != 1:
             return True
         return False
