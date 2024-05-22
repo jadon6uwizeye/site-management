@@ -10,6 +10,7 @@ class District(models.Model):
         return self.name
     
 class OfficeLevel(models.Model):
+    office_level = models.IntegerField()
     name = models.CharField(max_length=50)
     
     def __str__(self):

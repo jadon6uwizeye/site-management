@@ -13,16 +13,15 @@ class LeaveRequesListCreateAPIView(generics.ListCreateAPIView):
     
     def perform_create(self, serializer):
         user = self.request.user
-        print("user", user)
         serializer.save(requested_by=user)
         
-    # if admin user, return all leave requests else return only the user's leave requests
-    # add aprove boolean field to the serializer
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
+        # if user is on office lever 1 return only his/her requests
+        if user.userprofile.office_level.office_level == 1 or user.userprofile.office_level.office_level == 2:
+            return LeaveRequest.objects.filter(requested_by=user)
+        else:
             return LeaveRequest.objects.all()
-        return LeaveRequest.objects.filter(requested_by=user)
     
     def get_serializer_context(self):
         context = super(LeaveRequesListCreateAPIView, self).get_serializer_context()
@@ -35,15 +34,22 @@ class SiteIssueListCreateAPIView(generics.ListCreateAPIView):
     serializer_class = SiteIssueSerializer
     
     def perform_create(self, serializer):
-        user = get_user_model().objects.all().first()
-        print("user", user)
+        user = self.request.user
         serializer.save(reported_by=user)
         
     def get_queryset(self):
         user = self.request.user
-        if user.is_staff:
-            return SiteIssue.objects.all()
-        return SiteIssue.objects.filter(reported_by=user)
+        # if user is on office lever 1 return only his/her requests
+        if user.userprofile.office_level.office_level == 1:
+            return SiteIssue.objects.filter(reported_by=user)
+        # if user is on office lever 2 return all issues in his/her district that are open
+        elif user.userprofile.office_level.office_level == 2:
+            return SiteIssue.objects.filter(
+                reported_by__userprofile__district=user.userprofile.district,
+                status=SiteIssue.OPEN
+            )
+        else:
+            return SiteIssue.objects.filter(status=SiteIssue.TRANSFERED)
     
     def get_serializer_context(self):
         context = super(SiteIssueListCreateAPIView, self).get_serializer_context()
