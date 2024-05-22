@@ -3,6 +3,7 @@ from .models import LeaveRequest, SiteIssue
 
 class LeaveRequestSerializer(serializers.ModelSerializer):
     requested_by_data = serializers.SerializerMethodField()
+    can_approve = serializers.SerializerMethodField()
     class Meta:
         model = LeaveRequest
         fields = "__all__"
@@ -14,9 +15,18 @@ class LeaveRequestSerializer(serializers.ModelSerializer):
             "email": obj.requested_by.email,
         }
         
+    def get_can_approve(self, obj):
+        user = self.context.get("user")
+        if user.is_staff:
+            return True
+        return False
+        
 class SiteIssueSerializer(serializers.ModelSerializer):
     reported_by_data = serializers.SerializerMethodField()
     resolved_by_data = serializers.SerializerMethodField()
+    can_resolve = serializers.SerializerMethodField()
+    status = serializers.CharField(read_only=True)
+    
     class Meta:
         model = SiteIssue
         fields = "__all__"
@@ -36,3 +46,9 @@ class SiteIssueSerializer(serializers.ModelSerializer):
                 "email": obj.resolved_by.email,
             }
         return None
+    
+    def get_can_resolve(self, obj):
+        user = self.context.get("user")
+        if user.is_staff:
+            return True
+        return False

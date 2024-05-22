@@ -3,7 +3,30 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
-# Create your models here.
+class District(models.Model):
+    name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.name
+    
+class OfficeLevel(models.Model):
+    name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.name
+    
+class userProfile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    district = models.ForeignKey(District, on_delete=models.CASCADE, null=True, blank=True)
+    office_level = models.ForeignKey(OfficeLevel, on_delete=models.CASCADE, null=True, blank=True)
+    
+    def __str__(self):
+        return self.user.username
+    
+    class Meta:
+        verbose_name = "User Profile"
+        verbose_name_plural = "User Profiles"
+    
 class LeaveRequest(models.Model):
     # leave_type choices
     CASUAL_LEAVE = "Casual Leave"
@@ -52,16 +75,20 @@ class SiteIssue(models.Model):
     OPEN = "Open"
     IN_PROGRESS = "In Progress"
     RESOLVED = "Resolved"
+    TRANSFERED = "Transfered"
     STATUS_CHOICES = [
         (OPEN, "Open"),
         (IN_PROGRESS, "In Progress"),
         (RESOLVED, "Resolved"),
+        (TRANSFERED, "Transfered"),
     ]
     
     issue_title = models.CharField(max_length=50)
     issue_description = models.TextField(null=True, blank=True)
     supporting_document = models.FileField(upload_to="supporting_documents/")
     reported_by = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    transfered = models.BooleanField(default=False)
+    transferred_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="transferred_by", null=True, blank=True)
     resolved_by = models.ForeignKey(User, on_delete=models.CASCADE, related_name="resolved_by", null=True, blank=True)
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default=OPEN)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -72,8 +99,3 @@ class SiteIssue(models.Model):
     
     class Meta:
         verbose_name_plural = "Site Issues"
-        
-        
-
-# District
-# office levels
