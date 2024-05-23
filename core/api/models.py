@@ -3,8 +3,15 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+class Province(models.Model):
+    name = models.CharField(max_length=50)
+    
+    def __str__(self):
+        return self.name
+
 class District(models.Model):
     name = models.CharField(max_length=50)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE)
     
     def __str__(self):
         return self.name
