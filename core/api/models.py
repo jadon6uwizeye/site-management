@@ -16,6 +16,13 @@ class District(models.Model):
     def __str__(self):
         return self.name
     
+class Cell(models.Model):
+    name = models.CharField(max_length=50)
+    district = models.ForeignKey(District, on_delete=models.CASCADE)
+    
+    def __str__(self):
+        return self.name
+    
 class OfficeLevel(models.Model):
     office_level = models.IntegerField()
     name = models.CharField(max_length=50)
@@ -25,6 +32,7 @@ class OfficeLevel(models.Model):
     
 class userProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
+    cell = models.ForeignKey(Cell, on_delete=models.CASCADE, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.CASCADE, null=True, blank=True)
     office_level = models.ForeignKey(OfficeLevel, on_delete=models.CASCADE, null=True, blank=True)
     

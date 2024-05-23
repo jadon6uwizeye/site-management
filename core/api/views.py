@@ -45,7 +45,7 @@ class LeaveRequesListCreateAPIView(generics.ListCreateAPIView):
 
 class SiteIssueListCreateAPIView(generics.ListCreateAPIView):
     queryset = SiteIssue.objects.all()
-    permission_classes = [IsAuthenticated]
+    # permission_classes = [IsAuthenticated]
     serializer_class = SiteIssueSerializer
 
     def perform_create(self, serializer):
