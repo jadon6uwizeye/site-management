@@ -60,12 +60,12 @@ class SiteIssueListCreateAPIView(generics.ListCreateAPIView):
         # if user is on office lever 2 return all issues in his/her district that are open
         elif user.userprofile.office_level.office_level == 2:
             return SiteIssue.objects.filter(
-                reported_by__userprofile__district=user.userprofile.district,
-                status=SiteIssue.OPEN,
+                status__in=[SiteIssue.OPEN, SiteIssue.RESOLVED],
+                reported_by__userprofile__district=user.userprofile.district
             ).order_by("-created_at")
         else:
             return SiteIssue.objects.filter(
-                status=SiteIssue.TRANSFERED,
+                status__in=[SiteIssue.TRANSFERED, SiteIssue.RESOLVED],
                 reported_by__userprofile__district__province=user.userprofile.district.province,
             ).order_by("-created_at")
 
